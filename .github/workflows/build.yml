@@ -198,4 +198,5 @@ jobs:
           project-id: ${{ secrets.PROJECT_API_ID }}
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
           shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+          
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
