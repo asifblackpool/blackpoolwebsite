@@ -1,0 +1,189 @@
+﻿name: Docker - Build and Deploy Block
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Site to deploy'
+        required: false
+        type: choice
+        options:
+          - campaigns
+          - business
+          - your-council
+          - residents
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/${{ github.repository }}
+
+jobs:
+  build-latest:
+    name: Build Block
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Debug - Check GH_PAT secret
+        run: |
+          echo "Checking if GH_PAT secret is available..."
+          if [ -n "$GH_PAT" ]; then
+            echo "✅ GH_PAT is set!"
+            echo "Token length: ${#GH_PAT}"
+          else
+            echo "❌ GH_PAT is NOT set or is empty!"
+            exit 1
+          fi
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
+
+      - name: Stamp project version with build number
+        run: |
+          CSPROJ_FILE=$(find . -name "*.csproj" -not -path "./*Tests*" -not -path "./*test*" | head -1)
+          echo "Found project file: $CSPROJ_FILE"
+          sed -i 's|<Version>.*</Version>|<Version>1.0.${{ github.run_number }}</Version>|g' $CSPROJ_FILE
+          echo "Updated version to:"
+          grep -A 1 -B 1 '<Version>' $CSPROJ_FILE
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            --build-arg GH_PAT=${{ secrets.GH_PAT }} \
+            --build-arg PROJECT_API_ID=${{ secrets.PROJECT_API_ID }} \
+            --build-arg ALIAS=${{ secrets.ALIAS }} \
+            --build-arg CONTENSIS_CLIENT_ID=${{ secrets.CONTENSIS_CLIENT_ID }} \
+            --build-arg CONTENSIS_CLIENT_SECRET=${{ secrets.CONTENSIS_SHARED_SECRET }} \
+            --build-arg ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }} \
+            --build-arg TARGETARCH=amd64 \
+            --build-arg ASPNETCORE_URLS=http://*:3001 \
+            -t ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} \
+            -t ${{ env.IMAGE_NAME }}:latest \
+            .
+
+      - name: Debug - Verify .env file in Docker image
+        run: |
+          echo "=== VERIFYING .env FILE IN DOCKER IMAGE ==="
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "ls -la .env && echo '✅ .env file found!' || echo '❌ .env file NOT found!'"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "cat .env | sed 's/ACCESS_TOKEN=.*/ACCESS_TOKEN=***MASKED***/g' || echo '❌ Failed to read .env file!'"
+          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "printenv ACCESS_TOKEN | head -c 10 && echo '... (truncated)' || echo '❌ ACCESS_TOKEN not found!'"
+        continue-on-error: true
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
+          docker push ${{ env.IMAGE_NAME }}:latest
+
+  resolve-targets:
+    name: Parse deployment targets
+    runs-on: ubuntu-latest
+    outputs:
+      targets: ${{ steps.parse.outputs.targets }}
+    steps:
+      - name: Parse deployment tags from commit message or manual input
+        id: parse
+        run: |
+          # Manual dispatch takes priority
+          if [ -n "${{ github.event.inputs.target }}" ]; then
+            echo "targets=[\"${{ github.event.inputs.target }}\"]" >> $GITHUB_OUTPUT
+            echo "✅ Manual deployment target: ${{ github.event.inputs.target }}"
+            exit 0
+          fi
+
+          # Parse from commit message
+          MSG="${{ github.event.head_commit.message }}"
+          echo "Commit message: $MSG"
+
+          # Find [deploy:xxx,yyy] pattern
+          if [[ "$MSG" =~ \[deploy:([a-z,-]+)\] ]]; then
+            TARGETS="${BASH_REMATCH[1]}"
+            echo "Found deploy tag: $TARGETS"
+
+            # Validate each site name
+            VALID=""
+            IFS=',' read -ra ARRAY <<< "$TARGETS"
+            for site in "${ARRAY[@]}"; do
+              case "$site" in
+                campaigns|business|your-council|residents)
+                  if [ -z "$VALID" ]; then VALID="\"$site\""; else VALID="$VALID,\"$site\""; fi
+                  ;;
+                *)
+                  echo "⚠️  Unknown site: $site (ignored)"
+                  ;;
+              esac
+            done
+
+            if [ -n "$VALID" ]; then
+              echo "targets=[$VALID]" >> $GITHUB_OUTPUT
+              echo "✅ Deployment targets: [$VALID]"
+            else
+              echo "targets=[]" >> $GITHUB_OUTPUT
+              echo "❌ No valid sites found"
+            fi
+          else
+            echo "targets=[]" >> $GITHUB_OUTPUT
+            echo "ℹ️  No [deploy:...] tag found - build only, no deployment"
+          fi
+
+  deploy:
+    name: Push block to Contensis
+    runs-on: ubuntu-latest
+    needs: [build-latest, resolve-targets]
+    if: needs.resolve-targets.outputs.targets != '[]'
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        target: ${{ fromJSON(needs.resolve-targets.outputs.targets) }}
+
+    steps:
+      - name: Resolve Block ID
+        id: resolve
+        run: |
+          case "${{ matrix.target }}" in
+            campaigns)
+              echo "block_id=${{ secrets.BLOCK_ID_CAMPAIGNS }}" >> $GITHUB_OUTPUT
+              ;;
+            business)
+              echo "block_id=${{ secrets.BLOCK_ID_BUSINESS }}" >> $GITHUB_OUTPUT
+              ;;
+            your-council)
+              echo "block_id=${{ secrets.BLOCK_ID_YOUR_COUNCIL }}" >> $GITHUB_OUTPUT
+              ;;
+            residents)
+              echo "block_id=${{ secrets.BLOCK_ID_RESIDENTS }}" >> $GITHUB_OUTPUT
+              ;;
+          esac
+
+      - name: Update Docker client
+        run: |
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+          docker version --format '{{.Client.Version}}'
+
+      - name: Push block to Contensis
+        uses: contensis/block-push@v1
+        env:
+          DOCKER_API_VERSION: 1.44
+        with:
+          block-id: ${{ steps.resolve.outputs.block_id }}
+          alias: ${{ secrets.ALIAS }}
+          project-id: ${{ secrets.PROJECT_API_ID }}
+          client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
+          shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+          image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}

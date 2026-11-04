@@ -1,0 +1,52 @@
+﻿using Content.Modelling.Models.GenericTypes;
+using Content.Modelling.Models.Templates;
+using Microsoft.Extensions.Logging;
+using Moq;
+using RazorPageBlackpoolWebsite.Core.Interfaces;
+using RazorPageBlackpoolWebsite.Core.Models;
+using RazorPageBlackpoolWebsite.Services.Breadcrumb;
+using RazorPageBlackpoolWebsite.Services.Interfaces;
+
+using Xunit;
+
+namespace RazorPageBlackpoolWebsite.UnitTests.Pages
+{
+    public class BasePageTests
+    {
+        [Fact]
+        public async Task BasePageModel_OnGetByPathAsync_Populates_Items()
+        {
+            // Arrange
+            var mockLogger = new Mock<ILogger<BasePageModel<BGStandard>>>();
+            var mockDataService = new Mock<IDataService<BGStandard>>();
+            var mockBreadcrumb = new Mock<BreadcrumbService>();
+            var mockRepo = new Mock<IContentRepository>();
+
+            var fakeChildren = new List<BGStandard>
+            {
+                new BGStandard { PageTitle = "Child 1" },
+                new BGStandard { PageTitle = "Child 2" }
+            };
+
+            // OnGetByPathAsync calls _dataService.GetAllAsync(path)
+            mockDataService
+                .Setup(x => x.GetAllAsync("/campaigns", null))
+                .ReturnsAsync(fakeChildren);
+
+            var pageModel = new BasePageModel<BGStandard>(
+                mockLogger.Object,
+                mockDataService.Object,
+                mockRepo.Object,
+                mockBreadcrumb.Object);
+
+            // Act
+            await pageModel.OnGetByPathAsync("/campaigns");
+            var result = pageModel.Items.ToList();
+
+            // Assert
+            Assert.Equal(2, result.Count);
+            Assert.Equal("Child 1", result[0].PageTitle);
+            mockDataService.Verify(x => x.GetAllAsync("/campaigns", null), Times.Once);
+        }
+    }
+}

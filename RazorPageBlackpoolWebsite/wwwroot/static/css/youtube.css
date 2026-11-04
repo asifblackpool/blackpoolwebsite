@@ -1,0 +1,9 @@
+﻿div.video-embed {
+    display: grid;
+    min-height: 500px;
+    padding-bottom: 20px;
+}
+
+div.video-container {
+    padding:20px 0px;
+}

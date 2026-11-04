@@ -1,0 +1,30 @@
+﻿:root {
+    --quote-primary-color: #041c2c;
+    --quote-primary-dark: #5f7604;
+    --quote-secondary-color: #0b0c0c;
+    --quote-background: #f3f2f1;
+    --quote-border: #b1b4b6;
+}
+
+.quote {
+    font-size: 2.25rem;
+    line-height: 1.25;
+    color: var(--quote-primary-color);
+    background-color: var(--quote-background);
+    padding: 1rem 1.5rem 1rem 3rem;  /* extra left padding to make room for the " */
+    border-left: 10px solid var(--quote-border);
+    margin: 2rem 0;
+    position: relative;                /* anchor for the absolutely-positioned " */
+    quotes: "\201C" "\201D";           /* curly double quotes */
+}
+
+.quote::before {
+    content: open-quote;
+    position: absolute;
+    left: 1.25rem;
+    top: 1.25rem;
+    font-size: 2.5rem;                   /* bigger than body text */
+    line-height: 1;
+    color: var(--quote-border);
+    font-family: Georgia, "Times New Roman", serif;
+}
