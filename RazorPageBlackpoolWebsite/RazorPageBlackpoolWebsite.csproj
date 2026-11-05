@@ -53,8 +53,6 @@
   <ItemGroup>
     <None Include="nuget.config" />
   </ItemGroup>
-
-
   <ItemGroup>
     <ProjectReference Include="..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj" Condition="Exists('..\..\shared\lgwebsite.data\content.modelling\content.modelling.csproj')" />
   </ItemGroup>
