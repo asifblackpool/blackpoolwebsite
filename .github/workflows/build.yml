@@ -1,4 +1,4 @@
-﻿name: Docker - Build and Deploy Block
+name: Docker - Build and Deploy Block
 
 on:
   push:
@@ -96,23 +96,19 @@ jobs:
       - name: Parse deployment tags from commit message or manual input
         id: parse
         run: |
-          # Manual dispatch takes priority
           if [ -n "${{ github.event.inputs.target }}" ]; then
             echo "targets=[\"${{ github.event.inputs.target }}\"]" >> $GITHUB_OUTPUT
             echo "✅ Manual deployment target: ${{ github.event.inputs.target }}"
             exit 0
           fi
 
-          # Parse from commit message
           MSG="${{ github.event.head_commit.message }}"
           echo "Commit message: $MSG"
 
-          # Find [deploy:xxx,yyy] pattern
           if [[ "$MSG" =~ \[deploy:([a-z,-]+)\] ]]; then
             TARGETS="${BASH_REMATCH[1]}"
             echo "Found deploy tag: $TARGETS"
 
-            # Validate each site name
             VALID=""
             IFS=',' read -ra ARRAY <<< "$TARGETS"
             for site in "${ARRAY[@]}"; do
@@ -152,6 +148,9 @@ jobs:
         target: ${{ fromJSON(needs.resolve-targets.outputs.targets) }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Resolve Block ID
         id: resolve
         run: |
@@ -170,6 +169,17 @@ jobs:
               ;;
           esac
 
+      - name: Export Commit Provenance
+        id: commit
+        run: |
+          echo "CONTENSIS_COMMIT_MESSAGE<<EOF" >> $GITHUB_ENV
+          git log -1 --format=%B >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+          echo "CONTENSIS_COMMIT_DATETIME=$(git log -1 --format=%cI)" >> $GITHUB_ENV
+          echo "✅ Commit provenance exported:"
+          echo "  Message: $(git log -1 --format=%s)"
+          echo "  DateTime: $(git log -1 --format=%cI)"
+
       - name: Update Docker client
         run: |
           curl -fsSL https://get.docker.com -o get-docker.sh
@@ -180,10 +190,13 @@ jobs:
         uses: contensis/block-push@v1
         env:
           DOCKER_API_VERSION: 1.44
+          CONTENSIS_COMMIT_MESSAGE: ${{ env.CONTENSIS_COMMIT_MESSAGE }}
+          CONTENSIS_COMMIT_DATETIME: ${{ env.CONTENSIS_COMMIT_DATETIME }}
         with:
           block-id: ${{ steps.resolve.outputs.block_id }}
           alias: ${{ secrets.ALIAS }}
           project-id: ${{ secrets.PROJECT_API_ID }}
           client-id: ${{ secrets.CONTENSIS_CLIENT_ID }}
           shared-secret: ${{ secrets.CONTENSIS_SHARED_SECRET }}
+          
           image-uri: ${{ env.IMAGE_NAME }}:build-${{ github.run_number }}
