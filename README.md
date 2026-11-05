@@ -13,7 +13,25 @@
 
 ## Example 1 - One website              Fix OOM and update privacy accordion [deploy:residents]
 ## Example 2 - Two or more websites     Fix shared form component and memory leak [deploy:residents,campaigns]
+##
+##
+## if you ever need to commit to another deployment block, you can use the following syntax:
+##  git commit --allow-empty -m "Deploy residents [deploy:residents]" (use package manager console in visual studio )
+##
+##---------------------------------------------------------------------------------------------------------------------
+##						| Block							| SITE_PATH		|	SITE_CONTROLLER		| VIEW_FOLDER |
+##						|:-----------------------------	| :------------	| :--------------------	| :-----------|
+##						| business-website				| Business		| Business				| Business    |
+##						| campaigns-website				| Campaigns		| Campaigns				| Campaigns   |
+##						| your-council-website			| YourCouncil   | YourCouncil           | YourCouncil |
+##						| residents-website             | Residents     | Residents             | Residents   |
 ## -------------------------------------------------------------------------------------------------------------------
+#
+#
+# 
+#
+#
+#
 -->
 
 * [Visual Studio 2022](https://visualstudio.microsoft.com/vs/#download) with the ASP.NET and web development workload.
