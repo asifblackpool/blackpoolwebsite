@@ -424,7 +424,7 @@ div.timetable-normal {
     border-top: solid 3px #fff;
     border-bottom: solid 3px #fff;
     height: 60px;
-    background-image: url('/SiteElements/ChannelShift/Content/Images/sport-blackpool/timetable-header.png');
+    background-image: url('/SiteElements/ChannelShift/Content/images/sport-blackpool/timetable-header.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -434,7 +434,7 @@ div.timetable-hover-class {
     border-top: solid 3px #fff;
     border-bottom: solid 3px #fff;
     height: 60px;
-    background-image: url('/SiteElements/ChannelShift/Content/Images/sport-blackpool/timetable-header-class-rollover.png');
+    background-image: url('/SiteElements/ChannelShift/Content/images/sport-blackpool/timetable-header-class-rollover.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -444,7 +444,7 @@ div.timetable-hover-swim {
     border-top: solid 3px #fff;
     border-bottom: solid 3px #fff;
     height: 60px;
-    background-image: url('/SiteElements/ChannelShift/Content/Images/sport-blackpool/timetable-header-swim-rollover.png');
+    background-image: url('/SiteElements/ChannelShift/Content/images/sport-blackpool/timetable-header-swim-rollover.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -632,7 +632,7 @@ div#happy-members {
 div.background-angle {
     height: auto;
     background-color: #fff;
-    background-image: url('/SiteElements/ChannelShift/Content/Images/sport-blackpool/angle-2425.png');
+    background-image: url('/SiteElements/ChannelShift/Content/images/sport-blackpool/angle-2425.png');
     background-repeat: no-repeat;
     position: relative;
     top: 0px;
@@ -653,7 +653,7 @@ footer {
 }
 
 #top-footer {
-    background-image: url('/SiteElements/ChannelShift/Content/Images/sport-blackpool/2425-angle.png');
+    background-image: url('/SiteElements/ChannelShift/Content/images/sport-blackpool/2425-angle.png');
     background-repeat: no-repeat;
     background-position: top;
     float: left;
@@ -665,7 +665,7 @@ footer {
     float: left;
     background-color: #041C2C;
     text-align: center;
-    background-image: url('/SiteElements/ChannelShift/Content/Images/sport-blackpool/296-angle.png');
+    background-image: url('/SiteElements/ChannelShift/Content/images/sport-blackpool/296-angle.png');
     background-repeat: no-repeat;
     height: 50px;
     position: relative;

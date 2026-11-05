@@ -12,16 +12,16 @@
 
   <ItemGroup>
     <Compile Remove="bin\Legacy\**" />
-    <Compile Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+    <Compile Remove="wwwroot\siteelements\**" />
     <Compile Remove="wwwroot\static\SiteElements\ChannelShift\razorviews\**" />
     <Content Remove="bin\Legacy\**" />
-    <Content Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+    <Content Remove="wwwroot\siteelements\**" />
     <Content Remove="wwwroot\static\SiteElements\ChannelShift\razorviews\**" />
     <EmbeddedResource Remove="bin\Legacy\**" />
-    <EmbeddedResource Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+    <EmbeddedResource Remove="wwwroot\siteelements\**" />
     <EmbeddedResource Remove="wwwroot\static\SiteElements\ChannelShift\razorviews\**" />
     <None Remove="bin\Legacy\**" />
-    <None Remove="wwwroot\siteelements\channelshift\razorviews\**" />
+    <None Remove="wwwroot\siteelements\**" />
     <None Remove="wwwroot\static\SiteElements\ChannelShift\razorviews\**" />
   </ItemGroup>
 
@@ -47,7 +47,6 @@
     <Folder Include="bin\" />
     <Folder Include="Data\" />
     <Folder Include="wwwroot\images\" />
-    <Folder Include="wwwroot\siteelements\channelshift\scripts\webresource\" />
   </ItemGroup>
 
   <ItemGroup>
