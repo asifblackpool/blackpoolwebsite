@@ -1,4 +1,5 @@
 {
-    "port": 3001,
-    "enableFullUriRouting": true
+  "port": 3001,
+  "enableFullUriRouting": true,
+  "static_paths": [ "static", "image-library", "assets" ]
 }

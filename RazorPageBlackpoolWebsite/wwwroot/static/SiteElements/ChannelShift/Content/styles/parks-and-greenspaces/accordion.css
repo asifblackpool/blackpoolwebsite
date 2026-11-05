@@ -49,7 +49,7 @@ li.head {
 }
 
     li.head a h2 i.icon-arrow-down {
-        background: transparent url(/static/SiteElements/ChannelShift/content/images/parks-and-greenspaces/arrowdown.svg) no-repeat 5px 13px;
+        background: transparent url(/static/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/arrowdown.svg) no-repeat 5px 13px;
         background-size: 30px 10px;
         height: 30px;
         position: relative;
@@ -58,7 +58,7 @@ li.head {
     }
 
     li.head a h2 i.icon-arrow-up {
-        background: transparent url(/static/SiteElements/ChannelShift/content/images/parks-and-greenspaces/arrowup.svg) no-repeat 5px 13px;
+        background: transparent url(/static/SiteElements/ChannelShift/Content/images/parks-and-greenspaces/arrowup.svg) no-repeat 5px 13px;
         background-size: 30px 10px;
         height: 30px;
         position: relative;

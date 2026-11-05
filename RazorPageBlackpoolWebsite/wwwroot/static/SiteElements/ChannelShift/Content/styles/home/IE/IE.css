@@ -19,7 +19,7 @@
 /* where is my nearset image */
 .my-area-search-container div.img-placeholder 
 {
-    background-image: url("/SiteElements/ChannelShift/content/images/your-area/yourareaicon.svg");
+    background-image: url("/SiteElements/ChannelShift/Content/images/your-area/yourareaicon.svg");
     background-repeat: no-repeat;
     background-color: transparent;
     background-position-x:10px;
@@ -31,7 +31,7 @@
 }
 
 .twitter-logo {
-    background-image: url('/SiteElements/ChannelShift/content/images/twitterfeed/twitter-logo.svg');
+    background-image: url('/SiteElements/ChannelShift/Content/images/twitterfeed/twitter-logo.svg');
     background-size: inherit;
     background-repeat: no-repeat;
     background-size: 85% 85%;

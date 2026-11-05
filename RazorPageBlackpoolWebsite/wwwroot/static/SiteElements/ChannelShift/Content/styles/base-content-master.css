@@ -173,7 +173,7 @@ footer div.row div.col-md-12 {
 }
 
 .listen span {
-  background: url('/SiteElements/ChannelShift/content/images/header-menu/listenicon.svg');
+  background: url('/SiteElements/ChannelShift/Content/images/header-menu/listenicon.svg');
   background-repeat: no-repeat;
   height: 17px;
   width: 20px;
@@ -285,7 +285,7 @@ div#search > span#form-master {
 }
 
 #search-button > input {
-  background: url('/SiteElements/ChannelShift/content/images/header-menu/magglass.svg');
+  background: url('/SiteElements/ChannelShift/Content/images/header-menu/magglass.svg');
   background-repeat: no-repeat;
   height: 25px;
   width: 50px;
@@ -421,7 +421,7 @@ span.error {
 
 #root-container div.backtotop-container > a.scrollToTop {
   color:#041c2c;
-  background: url('/SiteElements/Channelshift/Content/Images/backToTopArrow.png') center left no-repeat;
+  background: url('/SiteElements/ChannelShift/Content/Images/backToTopArrow.png') center left no-repeat;
   padding-left: 9px;
 }
 

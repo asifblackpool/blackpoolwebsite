@@ -82,7 +82,7 @@ li.head {
 }
 
 li.head a h2 i.icon-arrow-up {
-    background: transparent url(/static/SiteElements/ChannelShift/content/images/sport-blackpool/cross.svg) no-repeat 5px 13px;
+    background: transparent url(/static/SiteElements/ChannelShift/Content/images/sport-blackpool/cross.svg) no-repeat 5px 13px;
     background-size: 35px 20px;
     height: 45px;
     position: relative;
@@ -91,7 +91,7 @@ li.head a h2 i.icon-arrow-up {
 }
 
 li.head a h2 i.icon-arrow-down {
-    background: transparent url(/static/SiteElements/ChannelShift/content/images/sport-blackpool/plus.svg) no-repeat 5px 13px;
+    background: transparent url(/static/SiteElements/ChannelShift/Content/images/sport-blackpool/plus.svg) no-repeat 5px 13px;
     background-size: 35px 20px;
     height: 45px;
     position: relative;

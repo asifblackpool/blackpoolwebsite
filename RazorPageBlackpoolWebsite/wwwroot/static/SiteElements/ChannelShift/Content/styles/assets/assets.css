@@ -22,7 +22,7 @@ div.generic-filter > label {
 }
 
 button#generic-search-button {
-    background: url(/static/SiteElements/ChannelShift/content/images/header-menu/magglass.svg) no-repeat;
+    background: url(/static/SiteElements/ChannelShift/Content/images/header-menu/magglass.svg) no-repeat;
     background-size: 20px 34px;
     background-position-x: 4px;
     background-position-y: 0px;

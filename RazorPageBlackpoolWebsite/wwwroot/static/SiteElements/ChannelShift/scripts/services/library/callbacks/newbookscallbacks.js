@@ -121,7 +121,7 @@
 
     newbookscallbacks.replaceImage = function(obj) {
        
-        var noimageurl = '/siteElements/channelshift/content/images/library/no-image.png';
+        var noimageurl = '/SiteElements/ChannelShift/Content/images/library/no-image.png';
         obj.onload = null;
         imageExists(obj.src, function (exists, w, h) {
             obj.src = (exists && w > 10) ? obj.src : noimageurl;

@@ -24,10 +24,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/Content/styles/bundles/year-2026/base.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/content/styles/bundles/year-2026/newsarticles.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/content/styles/contensis/cms-themes.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/content/styles/contensis/common/forms/styles-2024.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/content/styles/home/IE/ie10.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/Content/styles/bundles/year-2026/newsarticles.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/Content/styles/contensis/cms-themes.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/Content/styles/contensis/common/forms/styles-2024.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/Content/styles/home/IE/ie10.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/link-button.css" asp-append-version="true" />
     <!--link rel="stylesheet" href="~/static/css/webforms.css" asp-append-version="true" /-->
@@ -51,9 +51,9 @@
     <link rel="stylesheet" href="~/static/css/privacy-notices.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/static/css/webcast.css" asp-append-version="true" />
 
-    <link rel="shortcut icon" href="~/static/SiteElements/ChannelShift/content/images/favicons/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="~/static/SiteElements/ChannelShift/Content/images/favicons/favicon.ico" type="image/x-icon" />
 
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/handlebars.min.js?"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/handlebars.min.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/jquery.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/defiant.min.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/bootstrap.min.js"></script>
@@ -61,14 +61,14 @@
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/underscore.min.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/handlebars/handlebar-helpers.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/thirdparty/fluidvids/fluidvids.min.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/services/cookieservices.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/twitter/twitter.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/services/utilitiesservices.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/services/dateservices.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/services/footerservices.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/services/homeservices.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/services/tableservices.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/services/yourareaservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/cookieservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/twitter/twitter.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/utilitiesservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/dateservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/footerservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/homeservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/tableservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/yourareaservices.js"></script>
 
     <script type="text/javascript" src="~/static/js/services/formservices.js"></script>
     <script type="text/javascript" src="~/static/js/services/automenuservices.js"></script>
@@ -92,7 +92,7 @@
         $(document).ready(function () {
             window.commonservices.init('https://cms-blackpool.cloud.contensis.com', 'https://api.blackpool.gov.uk/preview/');
             privacyServices.init();
-            
+
         });
     </script>
     @if (Model?.ViewModel != null && Model.ViewModel.ModelType == typeof(BGStandardWithDocuments).Name)
@@ -164,7 +164,7 @@
     <div id="sidr-menu" class="sidr" style="display: none;"></div>
 
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/utilitiesservices.js"></script>
-    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/Scripts/common/common.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/common/common.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/homeservices.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/browserservices.js"></script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/scrollerservices.js"></script>
@@ -193,7 +193,7 @@
     <link rel="stylesheet" href="~/static/SiteElements/ChannelShift/Content/styles/bundles/year-2026/thirdparty/govuk/overrides.css" asp-append-version="true" />
     <script>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/thirdparty/govuk/accordion.js"></script>
-    <script type="text/javascript" rc="~/static/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
+    <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {

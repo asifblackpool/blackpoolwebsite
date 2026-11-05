@@ -178,7 +178,7 @@ a.icon-pdf, a.icon-printer {
 }
 
 a.icon-pdf {
-    background: url(/static/SiteElements/ChannelShift/content/images/landing-pages/pdf-icon.svg) no-repeat;
+    background: url(/static/SiteElements/ChannelShift/Content/images/landing-pages/pdf-icon.svg) no-repeat;
     background-size: 20px 20px;
     height: 25px;
     width: 30px;
@@ -191,7 +191,7 @@ a.icon-pdf {
 }
 
 .icon-printer {
-    background: url(/static/SiteElements/ChannelShift/content/images/landing-pages/printer-icon.svg) no-repeat;
+    background: url(/static/SiteElements/ChannelShift/Content/images/landing-pages/printer-icon.svg) no-repeat;
     background-size: 20px 20px;
     height: 25px;
     width: 30px;

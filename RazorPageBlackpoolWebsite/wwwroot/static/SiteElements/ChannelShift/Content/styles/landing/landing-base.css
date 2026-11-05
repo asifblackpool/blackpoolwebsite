@@ -78,7 +78,7 @@ li.head h2 span.pull-left {
   width:85%;
 }
 li.head a h2 i.icon-arrow-up {
-    background: url("/SiteElements/ChannelShift/content/images/landing-pages/arrowup.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/landing-pages/arrowup.svg");
     background-repeat: no-repeat;
     background-color: #b3bd00;
     background-position: 5px 13px;
@@ -89,7 +89,7 @@ li.head a h2 i.icon-arrow-up {
     left: 0px;
 }
 li.head a h2 i.icon-arrow-down {
-    background: url("/SiteElements/ChannelShift/content/images/landing-pages/arrowdown.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/landing-pages/arrowdown.svg");
     background-repeat: no-repeat;
     background-color: #b3bd00;
     background-position: 5px 13px;
@@ -126,7 +126,7 @@ li.head a {
     line-height: 0.9em;
     list-style: none;
     list-style-position: outside;
-    background: transparent url('/SiteElements/ChannelShift/content/images/landing-pages/bullet.svg') no-repeat 0px 0.4em;
+    background: transparent url('/SiteElements/ChannelShift/Content/images/landing-pages/bullet.svg') no-repeat 0px 0.4em;
     padding: 0px 0px 10px 20px;
 }
 .accordion-togglable li a,
@@ -144,7 +144,7 @@ div#also-see-list ul a:hover {
 }
 
 i.icon-residents {
-    background: url("/SiteElements/ChannelShift/content/images/landing-pages/residents.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/landing-pages/residents.svg");
     background-repeat: no-repeat;
     background-color: transparent;
     background-position: 0px -20px;
@@ -173,7 +173,7 @@ ul#print-links-ul li {
     margin-right: 0px;
 }
 a.icon-pdf {
-    background: url("/SiteElements/ChannelShift/content/images/landing-pages/pdf-icon.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/landing-pages/pdf-icon.svg");
     background-repeat: no-repeat;
     background-color: transparent;
     background-position: 0px 0px;
@@ -188,7 +188,7 @@ a.icon-pdf {
     font-size: 0px;
 }
 a.icon-printer {
-    background: url("/SiteElements/ChannelShift/content/images/landing-pages/printer-icon.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/landing-pages/printer-icon.svg");
     background-repeat: no-repeat;
     background-color: transparent;
     background-position: 0px 0px;

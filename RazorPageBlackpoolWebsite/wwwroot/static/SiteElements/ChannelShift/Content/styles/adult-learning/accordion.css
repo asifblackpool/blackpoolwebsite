@@ -101,7 +101,7 @@ span.title-span {
 }
 
 li.head a h2 i.icon-arrow-up {
-    background: transparent url(/static/SiteElements/ChannelShift/content/images/adult-learning/close.png) no-repeat 5px 13px;
+    background: transparent url(/static/SiteElements/ChannelShift/Content/images/adult-learning/close.png) no-repeat 5px 13px;
     background-size: 35px 35px;
     height: 55px;
     position:relative;
@@ -109,7 +109,7 @@ li.head a h2 i.icon-arrow-up {
 }
 
 li.head a h2 i.icon-arrow-down {
-    background: transparent url(/static/SiteElements/ChannelShift/content/images/adult-learning/open.png) no-repeat 5px 13px;
+    background: transparent url(/static/SiteElements/ChannelShift/Content/images/adult-learning/open.png) no-repeat 5px 13px;
     background-size: 35px 35px;
     height: 55px;
     position: relative;

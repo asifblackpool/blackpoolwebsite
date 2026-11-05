@@ -42,43 +42,43 @@ div#top-tasks-outer-container {
     font-weight: bold;
 }
 .top-tasks-counciltax {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/counciltax.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/counciltax.svg");
 }
 .top-tasks-jobs {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/jobs.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/jobs.svg");
 }
 .top-tasks-benefits {
-    background: url("/SiteElements/ChannelShift/content/images/test/benefits.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/test/benefits.svg");
 }
 .top-tasks-bulkywaste {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/bulkywaste.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/bulkywaste.svg");
 }
 .top-tasks-flytipping {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/fly-tipping.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/fly-tipping.svg");
 }
 .top-tasks-parking {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/parking.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/parking.svg");
 }
 .top-tasks-bin-collection {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/bincollections.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/bincollections.svg");
 }
 .top-tasks-planning {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/planning.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/planning.svg");
 }
 .top-tasks-pay-it {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/payit.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/payit.svg");
 }
 .top-tasks-support-help {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/supportandhelp.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/supportandhelp.svg");
 }
 .top-tasks-social-care {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/socialcare.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/socialcare.svg");
 }
 .top-tasks-library {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/library.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/library.svg");
 }
 .top-tasks-school-admissions {
-    background: url("/SiteElements/ChannelShift/content/images/toptasks/icons/schooladmissions.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/toptasks/icons/schooladmissions.svg");
 }
 @media only screen and (max-width: 580px) {
     .top-tasks {

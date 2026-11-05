@@ -119,7 +119,7 @@ footer {
 #home-show-hide-services { cursor:pointer;}
 
 .mobile-close-icon {
-    background-image: url('/SiteElements/ChannelShift/content/images/mobile/cross-white.svg');
+    background-image: url('/SiteElements/ChannelShift/Content/images/mobile/cross-white.svg');
     background-size: inherit;
     background-repeat: no-repeat;
     height: 23px;
@@ -130,7 +130,7 @@ footer {
     position: relative;
 }
 .mobile-nav-icon {
-    background-image: url('/SiteElements/ChannelShift/content/images/mobile/navicon.svg');
+    background-image: url('/SiteElements/ChannelShift/Content/images/mobile/navicon.svg');
     background-size: inherit;
     background-repeat: no-repeat;
     height: 26px;
@@ -139,7 +139,7 @@ footer {
     display: block;
 }
 .mobile-search-icon {
-    background-image: url('/SiteElements/ChannelShift/content/images/mobile/mag-glass-white.svg');
+    background-image: url('/SiteElements/ChannelShift/Content/images/mobile/mag-glass-white.svg');
     background-size: inherit;
     background-repeat: no-repeat;
     position: relative;

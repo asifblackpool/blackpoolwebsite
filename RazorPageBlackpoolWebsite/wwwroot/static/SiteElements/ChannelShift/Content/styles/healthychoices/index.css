@@ -10,7 +10,7 @@ div.filter > label {
 }
 
 button#ct-search-button {
-    background: url(/static/SiteElements/ChannelShift/content/images/header-menu/magglass.svg) no-repeat;
+    background: url(/static/SiteElements/ChannelShift/Content/images/header-menu/magglass.svg) no-repeat;
     background-size: 20px 36px;
     background-position-x: 4px;
     background-position-y: 6px;

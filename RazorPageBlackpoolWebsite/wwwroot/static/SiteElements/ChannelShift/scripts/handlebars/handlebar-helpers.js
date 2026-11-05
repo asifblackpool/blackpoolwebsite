@@ -275,7 +275,7 @@ Handlebars.registerHelper('getLibraryName', function (Id) {
 
 Handlebars.registerHelper('buildLibrarySrc', function (isbn) {
     var url = "https:" + "//www.syndetics.com/index.aspx?type=xw12&upc=&oclc=&isbn={0}/MC.GIF";
-    var noImageUrl = '/siteElements/channelshift/content/images/library/no-image.png';
+    var noImageUrl = '/SiteElements/ChannelShift/Content/images/library/no-image.png';
 
     try {
         url = url.replace('{0}', isbn);

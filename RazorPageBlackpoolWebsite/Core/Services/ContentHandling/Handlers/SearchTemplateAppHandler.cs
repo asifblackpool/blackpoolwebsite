@@ -42,7 +42,7 @@ namespace RazorPageBlackpoolWebsite.Core.Services.ContentHandling.Handlers
                 // ------------------------------------------------------------
                 // 1. Register common dependencies (once per page)
                 // ------------------------------------------------------------
-                ResourceHelper.AddStyle(context, "/static/SiteElements/ChannelShift/content/styles/jquery/jquery-ui.min.css");
+                ResourceHelper.AddStyle(context, "/static/SiteElements/ChannelShift/Content/styles/jquery/jquery-ui.min.css");
                 ResourceHelper.AddScript(context, "/static/SiteElements/ChannelShift/scripts/jquery-ui.min.js");
                 ResourceHelper.AddScript(context, "/static/SiteElements/ChannelShift/scripts/bootstrap-select.min.js");
                 ResourceHelper.AddScript(context, "/static/SiteElements/ChannelShift/scripts/services/pagingservices.js");

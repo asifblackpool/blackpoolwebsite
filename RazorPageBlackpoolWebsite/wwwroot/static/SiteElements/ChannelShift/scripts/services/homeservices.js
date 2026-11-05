@@ -76,7 +76,7 @@
                     id: 'more-services-icon',
                     up: 'arrowup-white.svg',
                     down: 'arrowdown-white.svg',
-                    path: '/SiteElements/ChannelShift/content/images/mobile/'
+                    path: '/SiteElements/ChannelShift/Content/images/mobile/'
                 };
 
                 var src = $("#" + imgDetails.id).attr('src');

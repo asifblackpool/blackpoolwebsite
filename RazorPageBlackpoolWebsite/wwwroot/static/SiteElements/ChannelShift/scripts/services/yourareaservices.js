@@ -27,7 +27,7 @@
     var chkbxs = new Array();
     var map = null;
     var infoWindow = null;
-    var baseIconUrl = 'siteElements/channelshift/content/Images/maps/';
+    var baseIconUrl = 'SiteElements/ChannelShift/Content/Images/maps/';
 
     var _addressList = new Array();
     var _radius = 2; //distance from postcode in km

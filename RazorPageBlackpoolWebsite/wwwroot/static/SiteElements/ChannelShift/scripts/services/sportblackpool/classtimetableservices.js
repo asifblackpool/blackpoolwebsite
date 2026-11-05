@@ -110,7 +110,7 @@
                     data: null,
                     "mRender": function (data, type, row) {
                         return '<a class="open-modal" data-toggle="modal" data-target="#myModal" href="#">' +
-                            '<img src="/static/SiteElements/channelshift/content/images/sport-blackpool/info-icon-red.png" alt="information" style="width:20px; height:20px; margin-left:25px;" /></a>';
+                            '<img src="/static/SiteElements/ChannelShift/Content/images/sport-blackpool/info-icon-red.png" alt="information" style="width:20px; height:20px; margin-left:25px;" /></a>';
                     }
                 },
                 {

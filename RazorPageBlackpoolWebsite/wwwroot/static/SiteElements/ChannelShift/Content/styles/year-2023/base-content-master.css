@@ -215,7 +215,7 @@ footer div.row div.col-md-12 {
 }
 
 .listen span {
-  background: url('/SiteElements/ChannelShift/content/images/header-menu/listenicon.svg');
+  background: url('/SiteElements/ChannelShift/Content/images/header-menu/listenicon.svg');
   background-repeat: no-repeat;
   height: 17px;
   width: 20px;
@@ -344,7 +344,7 @@ div#search > span#form-master {
 }
 
 #search-button > input {
-  background: url('/SiteElements/ChannelShift/content/images/homepage-new/magnify-white.png');
+  background: url('/SiteElements/ChannelShift/Content/images/homepage-new/magnify-white.png');
   background-repeat: no-repeat;
   height: 25px;
   width: 50px;
@@ -406,7 +406,7 @@ ul#print-links-ul li {
 }
 
 a.icon-pdf {
-    background: url("/SiteElements/ChannelShift/content/images/landing-pages/pdf-icon.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/landing-pages/pdf-icon.svg");
     background-repeat: no-repeat;
     background-color: transparent;
     background-position: 0px 0px;
@@ -422,7 +422,7 @@ a.icon-pdf {
 }
 
 a.icon-printer {
-    background: url("/SiteElements/ChannelShift/content/images/landing-pages/printer-icon.svg");
+    background: url("/SiteElements/ChannelShift/Content/images/landing-pages/printer-icon.svg");
     background-repeat: no-repeat;
     background-color: transparent;
     background-position: 0px 0px;
@@ -576,7 +576,7 @@ span.error {
 
 #root-container div.backtotop-container > a.scrollToTop {
   color:#041c2c;
-  background: url('/SiteElements/Channelshift/Content/Images/backToTopArrow.png') center left no-repeat;
+  background: url('/SiteElements/ChannelShift/Content/Images/backToTopArrow.png') center left no-repeat;
   padding-left: 9px;
 }
 
