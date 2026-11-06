@@ -120,8 +120,9 @@ namespace RazorPageBlackpoolWebsite.Services
             if (_cache.TryGetValue(cacheKey, out CmsNode? cached) && cached != null)
                 return cached;
 
-            var node = await _contensisClient.Nodes.GetByPathAsync(
-                path, entryFields: null, entryLinkDepth: 0);
+            var node = await _contensisClient.Nodes.GetByPathAsync(path, entryFields: null, entryLinkDepth: 0);
+
+            //var node = await _contensisClient.Nodes.GetByPathAsync(path,entryFields: new[] { "title" }, entryLinkDepth: 0, allowPartialMatch: false);
 
             if (node == null) return null;
 

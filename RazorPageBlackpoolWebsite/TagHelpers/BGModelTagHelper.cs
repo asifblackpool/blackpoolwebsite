@@ -74,6 +74,18 @@ namespace RazorPageBlackpoolWebsite.TagHelpers
                     string accordionHtml = await RenderViewComponentAsync("Accordions",accordionModel);
                     output.PostElement.AppendHtml(accordionHtml);
                 }
+                else if (Model.ConcreteModel is BGServiceLanding serviceLanding)
+                {
+                    // Output canvas first
+                    output.PostElement.AppendHtml(canvasHtml);
+
+                    // Render tile navigation component
+                    string accordionHtml = await RenderViewComponentAsync("Accordions", serviceLanding);
+                    output.PostElement.AppendHtml(accordionHtml);
+                }
+
+
+
                 else if (Model.ConcreteModel is BGServiceLandingTile tileModel)
                 {
                     // Output canvas first

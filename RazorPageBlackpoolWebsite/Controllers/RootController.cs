@@ -25,7 +25,7 @@ namespace RazorPageBlackpoolWebsite.Controllers
         public async Task<IActionResult> Index(string slug)
         {
             slug ??= "";
-            return await RenderDynamicPageAsync(_siteConfig.ViewFolder, slug);
+            return await RenderDynamicPageAsync(_siteConfig.SitePath, slug);
         }
     }
 }

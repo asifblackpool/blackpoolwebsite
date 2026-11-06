@@ -19,12 +19,12 @@
 ##  git commit --allow-empty -m "Deploy residents [deploy:residents]" (use package manager console in visual studio )
 ##
 ##---------------------------------------------------------------------------------------------------------------------
-##						| Block							| SITE_PATH		|	SITE_CONTROLLER		| VIEW_FOLDER |
-##						|:-----------------------------	| :------------	| :--------------------	| :-----------|
-##						| business-website				| Business		| Business				| Business    |
-##						| campaigns-website				| Campaigns		| Campaigns				| Campaigns   |
-##						| your-council-website			| YourCouncil   | YourCouncil           | YourCouncil |
-##						| residents-website             | Residents     | Residents             | Residents   |
+##		| Block							| SITE_PATH		|	SITE_CONTROLLER		| VIEW_FOLDER |
+##		|:-----------------------------	| :------------	| :--------------------	| :-----------|
+##		| business-website				| Business		| Business				| Site        |
+##		| campaigns-website				| Campaigns		| Campaigns				| Site		  |
+##		| your-council-website			| YourCouncil   | YourCouncil           | Site        |
+##		| residents-website             | Residents     | Residents             | Site        |
 ## -------------------------------------------------------------------------------------------------------------------
 #
 #

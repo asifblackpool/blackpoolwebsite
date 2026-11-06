@@ -30,7 +30,7 @@ namespace RazorPageBlackpoolWebsite.Controllers
                 ? section
                 : $"{section}/{slug}";
 
-            return await RenderDynamicPageAsync(ViewFolder, fullSlug);
+            return await RenderDynamicPageAsync(_siteConfig.SitePath, fullSlug);
         }
     }
 }

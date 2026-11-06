@@ -38,12 +38,12 @@ Console.WriteLine("SITE_PATH from env: " + Environment.GetEnvironmentVariable("S
 // Configure Forwarded Headers to trust the proxy
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
-options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
-                           ForwardedHeaders.XForwardedProto |
-                           ForwardedHeaders.XForwardedHost;
-options.KnownNetworks.Clear();
-options.KnownProxies.Clear();
-options.AllowedHosts.Clear();
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                               ForwardedHeaders.XForwardedProto |
+                               ForwardedHeaders.XForwardedHost;
+    options.KnownNetworks.Clear();
+    options.KnownProxies.Clear();
+    options.AllowedHosts.Clear();
 });
 
 builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
@@ -51,8 +51,8 @@ builder.Services.AddScoped<IContensisClientResolver, ContensisClientResolver>();
 // Register the concrete ContensisClient so that any class expecting it gets the correct per‑request client
 builder.Services.AddScoped<ContensisClient>(sp =>
 {
-var resolver = sp.GetRequiredService<IContensisClientResolver>();
-return resolver.GetClient();
+    var resolver = sp.GetRequiredService<IContensisClientResolver>();
+    return resolver.GetClient();
 });
 
 builder.Services.AddSingleton<ISiteConfig, SiteConfig>();
@@ -103,17 +103,17 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient("ClassicAssetProxy", client =>
 {
-client.Timeout = TimeSpan.FromSeconds(60);
+    client.Timeout = TimeSpan.FromSeconds(60);
 });
 
 // ===== Razor Pages =====
 builder.Services
     .AddRazorPages()
     .AddRazorPagesOptions(options =>
-{
-options.RootDirectory = "/Pages";
-options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
-});
+    {
+        options.RootDirectory = "/Pages";
+        options.Conventions.Add(new GlobalHeaderPageApplicationModelConvention());
+    });
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IRequestContext, RequestContext>();
@@ -125,9 +125,9 @@ builder.Services.AddContentHandlers();
 // Add all content modelling services (one line!)
 builder.Services.AddContentModelling(builder.Configuration, options =>
 {
-options.DefaultCacheMinutes = 10;
-options.DebugTokenKey = "DebugToken";
-options.EnableDebugModeByDefault = false;
+    options.DefaultCacheMinutes = 10;
+    options.DebugTokenKey = "DebugToken";
+    options.EnableDebugModeByDefault = false;
 });
 
 // Register the factory that maps Contensis content types to view models
@@ -144,12 +144,20 @@ builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
 // If RSS climbs towards the container limit, lower it.
 builder.Services.AddMemoryCache(options =>
 {
-options.SizeLimit = 64 * 1024 * 1024;   // 64 MB total
+    options.SizeLimit = 64 * 1024 * 1024;   // 64 MB total
 });
 
 var app = builder.Build();
 
 var siteConfig = app.Services.GetRequiredService<ISiteConfig>();
+
+// TEMP DEBUG — remove after fixing
+Console.WriteLine($"DEBUG: SitePath = '{siteConfig.SitePath}'");
+Console.WriteLine($"DEBUG: SiteController = '{siteConfig.SiteController}'");
+Console.WriteLine($"DEBUG: ViewFolder = '{siteConfig.ViewFolder}'");
+Console.WriteLine($"DEBUG: ENV SITE_PATH = '{Environment.GetEnvironmentVariable("SITE_PATH")}'");
+Console.WriteLine($"DEBUG: ENV SITE_CONTROLLER = '{Environment.GetEnvironmentVariable("SITE_CONTROLLER")}'");
+Console.WriteLine($"DEBUG: ENV VIEW_FOLDER = '{Environment.GetEnvironmentVariable("VIEW_FOLDER")}'");
 
 app.UseContentModelling();
 app.UseForwardedHeaders();
@@ -164,22 +172,22 @@ app.UseForwardedHeaders();
 // ─────────────────────────────────────────────────────────────────────
 if (!app.Environment.IsDevelopment())
 {
-app.UseExceptionHandler(new ExceptionHandlerOptions
-{
-ExceptionHandlingPath = "/Error",
-AllowStatusCode404Response = true
-});
-app.UseHsts();
+    app.UseExceptionHandler(new ExceptionHandlerOptions
+    {
+        ExceptionHandlingPath = "/Error",
+        AllowStatusCode404Response = true
+    });
+    app.UseHsts();
 }
 else
 {
-app.Use(async (context, next) =>
-{
-context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
-context.Response.Headers["Pragma"] = "no-cache";
-context.Response.Headers["Expires"] = "0";
-await next();
-});
+    app.Use(async (context, next) =>
+    {
+        context.Response.Headers["Cache-Control"] = "no-cache, no-store, must-revalidate";
+        context.Response.Headers["Pragma"] = "no-cache";
+        context.Response.Headers["Expires"] = "0";
+        await next();
+    });
 }
 
 app.UseStaticFiles();
@@ -241,20 +249,20 @@ app.UseStatusCodePagesWithReExecute("/Error");
 // fields exercises the same code path with negligible memory.
 using (var warmupScope = app.Services.CreateScope())
 {
-var logger = warmupScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-try
-{
-var client = warmupScope.ServiceProvider.GetRequiredService<ContensisClient>();
-await client.Nodes.GetByPathAsync(
-   siteConfig.SitePath.TrimStart('/'),
-   entryFields: new[] { "title" },
-   entryLinkDepth: 0);
+    var logger = warmupScope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    try
+    {
+        var client = warmupScope.ServiceProvider.GetRequiredService<ContensisClient>();
+        await client.Nodes.GetByPathAsync(
+           siteConfig.SitePath.TrimStart('/'),
+           entryFields: new[] { "title" },
+           entryLinkDepth: 0);
         logger.LogInformation("Contensis client warmed up successfully.");
-}
-catch (Exception ex)
-{
-logger.LogWarning(ex, "Contensis client warm-up failed – first request may be slow.");
-}
+    }
+    catch (Exception ex)
+    {
+        logger.LogWarning(ex, "Contensis client warm-up failed – first request may be slow.");
+    }
 }
 
 await app.RunAsync();
