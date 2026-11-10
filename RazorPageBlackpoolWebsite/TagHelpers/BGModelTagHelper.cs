@@ -55,6 +55,11 @@ namespace RazorPageBlackpoolWebsite.TagHelpers
                     Model.ConcreteModel is BGStandardWithDocuments)
                 {
                     output.PostElement.AppendHtml(canvasHtml);
+
+                    if (Model.ConcreteModel is BGStandard model)
+                    {
+                  
+                    }
                 }
                 else if (Model.ConcreteModel is BGStandardWithForms forms)
                 {
