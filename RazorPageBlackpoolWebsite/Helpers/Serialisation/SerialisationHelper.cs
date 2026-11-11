@@ -38,4 +38,5 @@ namespace RazorPageBlackpoolWebsite.Helpers.Serialisation
             }
         }
     }
+
 }
