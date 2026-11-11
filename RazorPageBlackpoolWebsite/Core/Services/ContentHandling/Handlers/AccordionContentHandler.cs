@@ -1,9 +1,7 @@
-﻿// Core/Services/ContentHandling/Handlers/AccordionWithCtaHandler.cs (Simplified)
-using Content.Modelling.Constants;
+﻿using Content.Modelling.Constants;
 using Content.Modelling.Models.Components;
 using Content.Modelling.Models.GenericTypes;
 using Microsoft.AspNetCore.Html;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RazorPageBlackpoolWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageBlackpoolWebsite.Helpers.Interfaces;
@@ -20,77 +18,60 @@ namespace RazorPageBlackpoolWebsite.Core.Services.ContentHandling.Handlers
             _accordionRenderer = accordionRenderer;
         }
 
-        string IContentHandler.ContentType => throw new NotImplementedException();
+        string IContentHandler.ContentType => ComponentKeys.ACCORDION_CONTENT;
 
         public bool CanHandle(string className)
         {
-            return className == typeof(AccordionContent).Name;
+            return className == typeof(AccordionContent).Name
+                || className == ComponentKeys.ACCORDION_CONTENT;
         }
 
-        public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
+        public Task<IHtmlContent> HandleAsync(SerialisedItem item)
         {
             if (string.IsNullOrEmpty(item.Content))
-                return HtmlString.Empty;
+                return Task.FromResult<IHtmlContent>(HtmlString.Empty);
 
             try
             {
-                List<IGovUkAccordionRenderer> accordionItems;
-                // Do this:
-
-
-                // Get all items:
-
                 var content = item.Content.Trim();
                 var jsonObject = JObject.Parse(content);
-                var accordionArray = jsonObject[ComponentKeys.ACCORDION_CONTENT];
 
-                AccordionContent? accordion = null;
+                // The canvas helper batches consecutive accordionContent items into:
+                //   { "accordionContent": [ {..}, {..}, ... ] }
+                // Fall back to the single-item format in case an old-shaped payload arrives.
+                List<AccordionContent> allItems;
 
-                // Get all item
-                if (accordionArray != null)
+                if (jsonObject[ComponentKeys.ACCORDION_CONTENT] is JArray batchedArray)
                 {
-                    accordion = accordionArray?.ToObject<AccordionContent>();
+                    allItems = batchedArray.ToObject<List<AccordionContent>>() ?? new();
                 }
                 else
                 {
-                    if (item.Key == ComponentKeys.ACCORDION_CONTENT)
-                    {
-                        accordion = jsonObject?.ToObject<AccordionContent>();
-                    }
-                    else
-                    {
-                        accordion = new AccordionContent();
-                    }
-                    
+                    var single = jsonObject.ToObject<AccordionContent>();
+                    allItems = single != null
+                        ? new List<AccordionContent> { single }
+                        : new List<AccordionContent>();
                 }
-           
 
+                if (allItems.Count == 0)
+                    return Task.FromResult<IHtmlContent>(HtmlString.Empty);
 
-                if (accordion?.Body == string.Empty)
-                    return HtmlString.Empty;
-
-                string accordionTitle = accordion?.Title ?? "Accordion";
-
-                bool? rememberExpanded = accordion?.IsExpanded;
+                string accordionTitle = allItems.First().Title ?? "Accordion";
+                bool rememberExpanded = allItems.Count > 3;
 
                 var options = new GovUkAccordionOptions
                 {
                     AccordionId = $"accordion-{Guid.NewGuid():N}",
-                    RememberExpandedState = (rememberExpanded == null) ? false : (bool)rememberExpanded
+                    RememberExpandedState = rememberExpanded
                 };
 
-                if (accordion== null)
-                    return HtmlString.Empty;
-
-                List<AccordionContent> accordionContentList = new List<AccordionContent>();
-                accordionContentList.Add(accordion);
-                var temp = _accordionRenderer.RenderGovUkAccordion(accordionTitle, accordionContentList, options);
-
-                return temp;
+                var html = _accordionRenderer.RenderGovUkAccordion(accordionTitle, allItems, options);
+                return Task.FromResult(html);
             }
             catch
             {
-                return new HtmlString("<!-- Error rendering accordion content -->");
+                return Task.FromResult<IHtmlContent>(
+                    new HtmlString("<!-- Error rendering accordion content -->"));
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Content.Modelling.Helpers;
+﻿using Content.Modelling.Constants;
+using Content.Modelling.Helpers;
 using Content.Modelling.Models.Canvas.Helpers;
 using Content.Modelling.Models.Canvas.Lists;
 using Content.Modelling.Models.GenericTypes;
@@ -29,12 +30,13 @@ namespace RazorPageBlackpoolWebsite.Core.Services.ContentHandling.Handlers
             _contentFragmentHelper = contentFragmentHelper;
         }
 
-        string IContentHandler.ContentType => throw new NotImplementedException();
+        string IContentHandler.ContentType => CanvasKeys.LIST;
 
         public bool CanHandle(string className)
         {
-            return className == typeof(CanvasListItem).Name ||
-                   className == typeof(CanvasListBlock).Name;
+            return className == typeof(CanvasListItem).Name
+                || className == typeof(CanvasListBlock).Name
+                || className == CanvasKeys.LIST;
         }
 
         public async Task<IHtmlContent> HandleAsync(SerialisedItem item)
@@ -52,74 +54,61 @@ namespace RazorPageBlackpoolWebsite.Core.Services.ContentHandling.Handlers
 
                 if (token.Type == JTokenType.Array)
                 {
-                    // Handle array of list items
-                    var html = await HandleArrayTokenAsync(token);
-                    htmlContent.AppendHtml(html);
+                    // Bare _listItem[] — wrap in a synthetic _list and use the
+                    // same recursive renderer as the object path.
+                    htmlContent.AppendHtml(HandleArrayToken(token));
                 }
                 else if (token.Type == JTokenType.Object)
                 {
-                    // Try deserializing as CanvasListBlock first
-                    try
+                    // Normal _list object — deserialize and render recursively.
+                    var listBlock = await _serializer.DeserializeAsync<CanvasListBlock>(item);
+                    if (listBlock != null)
                     {
-                        var listBlock = await _serializer.DeserializeAsync<CanvasListBlock>(item);
-                        if (listBlock != null)
-                        {
-                            // Use the recursive renderer for full list blocks
-                            htmlContent.AppendHtml(await HandleListBlockAsync(listBlock));
-                        }
-                    }
-                    catch
-                    {
-                        // Fallback to deserializing as list of items
-                        var items = await _serializer.DeserializeAsync<CanvasListBlock>(item);
-                        if (items != null)
-                        {
-                            htmlContent.AppendHtml(await HandleDeserializedItemsAsync(items));
-                        }
+                        htmlContent.AppendHtml(HandleListBlock(listBlock));
                     }
                 }
             }
             catch (Exception ex)
             {
-                htmlContent.AppendHtml($"<!-- Error processing CanvasList Block Item: {ex.Message} -->");
+                htmlContent.AppendHtml(
+                    $"<!-- Error processing CanvasList Block Item: {ex.Message} -->");
             }
 
             return htmlContent;
         }
 
-        // 👇 FIXED: No async keyword, returns Task<IHtmlContent> synchronously
-        private Task<IHtmlContent> HandleListBlockAsync(CanvasListBlock listBlock)
+        /// <summary>
+        /// Renders a <see cref="CanvasListBlock"/> via the recursive extension,
+        /// which handles nested lists inside list items.
+        /// </summary>
+        private static IHtmlContent HandleListBlock(CanvasListBlock listBlock)
         {
             string html = listBlock.RenderHtmlRecursive("shade-black");
-            return Task.FromResult<IHtmlContent>(new HtmlString(html));
+            return new HtmlString(html);
         }
 
-
-        private async Task<IHtmlContent> HandleArrayTokenAsync(JToken token)
+        /// <summary>
+        /// Handles a bare array of list items by wrapping it in a synthetic
+        /// <see cref="CanvasListBlock"/> and going through the same recursive
+        /// renderer. Previously this path used CanvasListItemRenderer which
+        /// did not handle nested lists.
+        /// </summary>
+        private static IHtmlContent HandleArrayToken(JToken token)
         {
-            await Task.CompletedTask;
-            
-            var ul = new TagBuilder("ul");
-            ul.AddCssClass("shade-black");
-
-            foreach (JToken jItem in token)
+            var wrapped = new JObject
             {
-                JToken? valueToken = jItem["value"];
-                var html = CanvasListItemRenderer.RenderTextWithLinks(valueToken);
+                ["id"] = "synthetic-list",
+                ["type"] = CanvasKeys.LIST,
+                ["properties"] = new JObject { ["listType"] = "unordered" },
+                ["value"] = token
+            };
 
-                var li = new TagBuilder("li");
-                li.InnerHtml.AppendHtml(html);
-                ul.InnerHtml.AppendHtml(li);
-            }
+            var listBlock = wrapped.ToObject<CanvasListBlock>();
+            if (listBlock == null)
+                return HtmlString.Empty;
 
-            return ul;
-        }
-
-        // 👇 FIXED: No async keyword, returns Task<IHtmlContent> synchronously
-        private Task<IHtmlContent> HandleDeserializedItemsAsync(CanvasListBlock listBlock)
-        {
             string html = listBlock.RenderHtmlRecursive("shade-black");
-            return Task.FromResult<IHtmlContent>(new HtmlString(html));
+            return new HtmlString(html);
         }
     }
 }

@@ -21,7 +21,7 @@
 ##---------------------------------------------------------------------------------------------------------------------
 ##		| Block							| SITE_PATH		|	SITE_CONTROLLER		| VIEW_FOLDER |
 ##		|:-----------------------------	| :------------	| :--------------------	| :-----------|
-##		| business-website				| Business		| Business				| Site        |
+##		| business-website				| Business		| Business				/.,M+)F| Site        |
 ##		| campaigns-website				| Campaigns		| Campaigns				| Site		  |
 ##		| your-council-website			| YourCouncil   | YourCouncil           | Site        |
 ##		| residents-website             | Residents     | Residents             | Site        |
@@ -29,7 +29,7 @@
 #
 #
 # 
-#
+#	``1   
 #
 #
 -->

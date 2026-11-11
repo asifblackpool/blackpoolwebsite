@@ -1,33 +1,41 @@
-﻿using Content.Modelling.Models.GenericTypes;
+﻿using Content.Modelling.Models.Canvas.Lists;
+using Content.Modelling.Models.GenericTypes;
 using Newtonsoft.Json;
 using RazorPageBlackpoolWebsite.Helpers.Wrappers;
 
 namespace RazorPageBlackpoolWebsite.Helpers.Serialisation
 {
-
-
-    // Utilities/ContentHelpers/SerializationHelper.cs
     public class SerializationHelper : ISerializationHelper
     {
+        private static readonly JsonSerializerSettings Settings = new()
+        {
+            Converters = new List<JsonConverter>
+            {
+                new ValueConverter(),
+                new FragmentConverter()
+            },
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
         public T? Deserialize<T>(SerialisedItem item)
         {
-            return JsonConvert.DeserializeObject<T>(item.Content);
+            return JsonConvert.DeserializeObject<T>(item.Content, Settings);
         }
 
-        public async Task<T?> DeserializeAsync<T>(SerialisedItem item)
+        public Task<T?> DeserializeAsync<T>(SerialisedItem item)
         {
-            // Using Task.Run to ensure proper async behavior
-            string temp = item.Content;
+            // JsonConvert.DeserializeObject is synchronous; wrap it so the
+            // signature stays async without spinning up a thread pool thread
+            // for no reason.
             try
             {
-                var t = JsonConvert.DeserializeObject<T>(item.Content);
+                var result = JsonConvert.DeserializeObject<T>(item.Content, Settings);
+                return Task.FromResult(result);
             }
-            catch(Exception ex)
+            catch
             {
-                temp = item.Content;
+                return Task.FromResult<T?>(default);
             }
-    
-            return await Task.Run(() => JsonConvert.DeserializeObject<T>(item.Content));
         }
     }
 }

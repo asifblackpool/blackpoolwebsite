@@ -1,6 +1,6 @@
 ﻿/* Custom CSS following GOV.UK Design System principles */
 :root {
-    --ul-primary-color: #041c2c; 
+    --ul-primary-color: #041c2c;
     --ul-print-color: #000;
     --link-color: #830065;
 }
@@ -8,30 +8,25 @@
 /* ----- BASE STYLES (shared for both ul and ol) ----- */
 ul.shade-black,
 ol.shade-black {
-  
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-weight: 400;
-    
+
     /* MOBILE FIRST (GOV.UK standard) */
     font-size: 16px;
     line-height: 1.25;
     color: var(--ul-primary-color);
-    
     margin-top: 0;
     margin-bottom: 20px;
-    
-    /* INDENTATION: GOV.UK uses padding-left on the list itself */
-    padding-left: 20px;
 
-    position:relative;
-    left:20px;
+    /* INDENTATION: bullets sit inside this padding */
+    padding-left: 20px;
 }
 
 /* ----- UNORDERED (bullets) ----- */
 ul.shade-black {
     list-style-type: disc;
-    margin-bottom:20px;
+    margin-bottom: 20px;
 }
 
 /* ----- ORDERED (numbers) ----- */
@@ -42,12 +37,12 @@ ol.shade-black {
 /* ----- LIST ITEMS (spacing between items) ----- */
 ul.shade-black > li,
 ol.shade-black > li {
-    margin-bottom: 0; /* GOV.UK: no gap on mobile for compactness */
+    margin-bottom: 0;
 }
 
 ul.shade-black > li > a,
 ol.shade-black > li > a {
-    color: var(--link-color)
+    color: var(--link-color);
 }
 
 /* ----- NESTED SUB-LISTS (any combination) ----- */
@@ -55,12 +50,11 @@ ul.shade-black ul,
 ul.shade-black ol,
 ol.shade-black ul,
 ol.shade-black ol {
-    margin-top: 10px;      /* GOV.UK: space between parent text and sub-list */
-    margin-bottom: 0;      /* Prevents double margin */
-    padding-left: 20px;    /* GOV.UK: adds another 20px indentation (total 40px) */
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding-left: 20px;
 }
 
-/* Ensure nested unordered lists keep bullets, nested ordered keep numbers */
 ul.shade-black ul,
 ol.shade-black ul {
     list-style-type: disc;
@@ -79,7 +73,7 @@ ol.shade-black ul ul,
 ol.shade-black ul ol,
 ol.shade-black ol ul,
 ol.shade-black ol ol {
-    padding-left: 20px;    /* INDENTATION: total 60px+ */
+    padding-left: 20px;
     margin-top: 10px;
 }
 
@@ -88,17 +82,15 @@ ol.shade-black ol ol {
     ul.shade-black,
     ol.shade-black {
         font-size: 19px;
-        line-height: 1.3157894737; /* 25/19 */
+        line-height: 1.3157894737;
         margin-bottom: 25px;
     }
 
-    /* Add a small 5px gap between items on tablet/desktop */
     ul.shade-black > li,
     ol.shade-black > li {
         margin-bottom: 5px;
     }
-    
-    /* Also apply the gap to nested items on desktop */
+
     ul.shade-black ul > li,
     ul.shade-black ol > li,
     ol.shade-black ul > li,
@@ -107,13 +99,7 @@ ol.shade-black ol ol {
     }
 }
 
-/* ----- Optional: Extra top margin (uncomment if needed) ----- */
-/* ul.shade-black,
-ol.shade-black {
-    margin-top: 30px;
-} */
-
-/* ----- PRINT STYLES (kept your variables) ----- */
+/* ----- PRINT STYLES ----- */
 @media print {
     ul.shade-black,
     ol.shade-black {
@@ -121,5 +107,4 @@ ol.shade-black {
         font-size: 14pt;
         line-height: 1.2;
     }
-    /* Native bullets/numbers inherit colour automatically in print */
 }

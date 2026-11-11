@@ -3,30 +3,25 @@ using Newtonsoft.Json;
 
 namespace RazorPageBlackpoolWebsite.Helpers.Extensions
 {
-    /// Helper extension methods for rendering lists
+    /// <summary>
+    /// Helper extension methods for rendering lists.
     /// </summary>
     public static class CanvasListExtensions
     {
-        /// <summary>
-        /// Determines if the list should be rendered as ordered (numbered)
-        /// </summary>
         public static bool IsOrdered(this CanvasListBlock list)
         {
             return list?.Properties?.ListType?.ToLower() == "ordered";
         }
 
-        /// <summary>
-        /// Gets the HTML tag name for the list
-        /// </summary>
         public static string GetHtmlTag(this CanvasListBlock list)
         {
             return list.IsOrdered() ? "ol" : "ul";
         }
 
         /// <summary>
-        /// Renders the list as HTML with proper tags and CSS classes
+        /// Renders the list as HTML, recursively handling nested lists.
         /// </summary>
-        public static string RenderHtml(this CanvasListBlock list, string cssClass = "shade-black")
+        public static string RenderHtmlRecursive(this CanvasListBlock list, string cssClass = "shade-black")
         {
             if (list?.Value == null || list.Value.Count == 0)
                 return string.Empty;
@@ -46,37 +41,9 @@ namespace RazorPageBlackpoolWebsite.Helpers.Extensions
             return html.ToString();
         }
 
-
-        public static string RenderHtmlRecursive(this CanvasListBlock list, string cssClass = "shade-black")
-        {
-            if (list?.Value == null || list.Value.Count == 0)
-                return string.Empty;
-
-            var html = new System.Text.StringBuilder();
-            string tag = list.GetHtmlTag();
-            html.Append($"<{tag} class=\"{cssClass}\">");
-
-            foreach (var item in list.Value)
-            {
-                // Check if this item contains a nested list
-                string content = ExtractContentWithNestedList(item);
-                html.Append($"<li>{content}</li>");
-            }
-
-            html.Append($"</{tag}>");
-            return html.ToString();
-        }
-
-        private static string ExtractContentWithNestedList(CanvasListItem item)
-        {
-            // This would need to inspect the item.Content for any nested _list blocks
-            // Implementation depends on how your Canvas structures nested lists
-            // Usually, a nested list would be another _list block inside the item's value
-            return ExtractTextContent(item.Content);
-        }
-
         /// <summary>
-        /// Extracts text from IValue (handles SimpleValue and ComplexValue)
+        /// Extracts HTML from an <see cref="IValue"/> (handles SimpleValue,
+        /// ComplexValue, and nested ListFragment recursively).
         /// </summary>
         private static string ExtractTextContent(IValue? value)
         {
@@ -87,30 +54,49 @@ namespace RazorPageBlackpoolWebsite.Helpers.Extensions
             {
                 return simple.Text ?? string.Empty;
             }
-            else if (value is ComplexValue complex)
+
+            if (value is ComplexValue complex)
             {
-                // Combine all text fragments
                 var fragments = new List<string>();
                 foreach (var fragment in complex.Fragments)
                 {
-                    /*
-                    System.Diagnostics.Debug.WriteLine(
-                         $"[EXTRACT] runtime={fragment.GetType().FullName} | " +
-                         $"type field=\"{fragment.Type}\" | " +
-                         $"Text=\"{fragment.Text}\" | " +
-                         $"isLink={fragment is LinkFragment} | " +
-                         $"Url=\"{(fragment as LinkFragment)?.Url}\""); */
-
+                    // ADD THIS LINE
+                    System.Diagnostics.Debug.WriteLine($"[Extract] fragment: {fragment.GetType().Name}, Text={fragment.Text}");
                     if (fragment is TextFragment text)
+                    {
                         fragments.Add(text.Text ?? string.Empty);
+                    }
                     else if (fragment is HtmlFragment html)
+                    {
                         fragments.Add(html.HtmlContent ?? string.Empty);
+                    }
                     else if (fragment is LinkFragment link)
+                    {
                         fragments.Add($"<a href=\"{link.Url}\">{link.Text}</a>");
+                    }
                     else if (fragment is ImageFragment image)
+                    {
                         fragments.Add($"<img src=\"{image.Source}\" alt=\"{image.AltText}\" />");
+                    }
+                    else if (fragment is ListFragment nestedList)
+                    {
+                        // ── NEW: recurse into nested lists ──
+                        // ADD THIS LINE
+                        System.Diagnostics.Debug.WriteLine($"[Extract] ListFragment found! Items={nestedList.Items?.Count ?? -1}");
+                        var nested = new CanvasListBlock
+                        {
+                            Value = nestedList.Items,
+                            Properties = new CanvasListProperties
+                            {
+                                ListType = nestedList.Properties?.ListType ?? "unordered"
+                            }
+                        };
+                        fragments.Add(nested.RenderHtmlRecursive(cssClass: "shade-black"));
+                    }
                     else
+                    {
                         fragments.Add(fragment.Text ?? string.Empty);
+                    }
                 }
                 return string.Join("", fragments);
             }
@@ -118,9 +104,6 @@ namespace RazorPageBlackpoolWebsite.Helpers.Extensions
             return string.Empty;
         }
 
-        /// <summary>
-        /// Deserializes a full _list block from JSON
-        /// </summary>
         public static CanvasListBlock? DeserializeListBlock(string json)
         {
             var settings = new JsonSerializerSettings
