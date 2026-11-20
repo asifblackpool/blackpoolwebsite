@@ -1,11 +1,22 @@
 ﻿@using Content.Modelling.Models.Templates
 @using RazorPageBlackpoolWebsite.Core.Models;
 @using RazorPageBlackpoolWebsite.Helpers;
+@using RazorPageBlackpoolWebsite.Configuration;
+@using RazorPageBlackpoolWebsite.Services;
 @using Content.Modelling.Helpers;
+@using Microsoft.Extensions.Options;
+
+@* ─── INJECTED SERVICES ─────────────────────────────────────────── *@
+@inject ApiUrlResolver ApiUrlResolver
+@inject IOptions<BlackpoolSettings> BlackpoolSettings
 
 @{
     var url = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
     string baseUrl = UrlHelper.GetBaseAddressUrl(url.ToString());
+
+    var settings = BlackpoolSettings.Value;
+    var apiUrl = ApiUrlResolver.Resolve(Context.Request);
+    var cmsUrl = ApiUrlResolver.ResolveCmsUrl();
     bool isTrue = !UrlHelper.IsLocal(baseUrl);
 
     if (isTrue)
@@ -88,12 +99,12 @@
         //]]>
     </script>
 
+    @* ─── CHANGED: now uses resolved @cmsUrl and @apiUrl instead of hardcoded values ─── *@
     <script type='text/javascript'>
         $(document).ready(function () {
-            window.commonservices.init('https://cms-blackpool.cloud.contensis.com', 'https://api.blackpool.gov.uk/preview/');
+            window.commonservices.init('@cmsUrl', '@apiUrl');
             privacyServices.init();
-
-        });
+                });
     </script>
     @if (Model?.ViewModel != null && Model.ViewModel.ModelType == typeof(BGStandardWithDocuments).Name)
     {
@@ -176,14 +187,14 @@
 
 
     <script type="text/javascript">
-        $(document).ready(function () {
+            $(document).ready(function () {
 
-            var pdfLinkChange = function () {
-                url = window.location.href + '?download=DownloadasPDFlink_pdf'
-                $('.icon-pdf').attr('href', url);
-            };
-            setTimeout(pdfLinkChange(), 800);
-        });
+                var pdfLinkChange = function () {
+            url = window.location.href + '?download=DownloadasPDFlink_pdf'
+            $('.icon-pdf').attr('href', url);
+                };
+        setTimeout(pdfLinkChange(), 800);
+            });
     </script>
 
     <!-- Accordion CSS and Scripts -->
@@ -196,12 +207,12 @@
     <script type="text/javascript" src="~/static/SiteElements/ChannelShift/scripts/services/privacy/privacyservices.js"></script>
 
     <script type="text/javascript">
-        $(document).ready(function () {
-            //tableservices.tablename("div.govuk-body table");
-            //tableservices.init();
-            tableservices.tablename(".data-table");
+            $(document).ready(function () {
+        //tableservices.tablename("div.govuk-body table");
+        //tableservices.init();
+        tableservices.tablename(".data-table");
 
-        });
+            });
     </script>
 
     @if (Context.Items["PageScripts"] is List<string> scripts)
@@ -221,18 +232,24 @@
             </script>
         }
     }
+
+    @* ─── CHANGED: GTM moved INSIDE <body>, just before </body> ─── *@
+    <!-- Google Tag Manager -->
+    <noscript>
+        <iframe src="//www.googletagmanager.com/ns.html?id=GTM-D744"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <script>
+
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-D744');
+    </script>
+    <!-- End Google Tag Manager -->
 </body>
 </html>
-<!-- Google Tag Manager -->
-<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-D744" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>
-    (function (w, d, s, l, i) {
-        w[l] = w[l] || []; w[l].push({
-            'gtm.start':
-                new Date().getTime(), event: 'gtm.js'
-        }); var f = d.getElementsByTagName(s)[0],
-            j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-    })(window, document, 'script', 'dataLayer', 'GTM-D744');
-</script>
-<!-- End Google Tag Manager -->

@@ -1,11 +1,53 @@
 {
   "profiles": {
-    "RazorPageBlackpoollWebsite": {
+    "YourCouncil": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/residents/council-tax/council-tax-information",
+      "launchUrl": "",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SITE_PATH": "/Your-Council",
+        "SITE_CONTROLLER": "YourCouncil",
+        "VIEW_FOLDER": "Site"
+      },
+      "hotReloadProfile": "aspnetcore",
+      "dotnetRunMessages": true
+    },
+    "Campaigns": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SITE_PATH": "/Campaigns",
+        "SITE_CONTROLLER": "Campaigns",
+        "VIEW_FOLDER": "Site"
+      },
+      "hotReloadProfile": "aspnetcore",
+      "dotnetRunMessages": true
+    },
+    "Business": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SITE_PATH": "/Business",
+        "SITE_CONTROLLER": "Business",
+        "VIEW_FOLDER": "Site"
+      },
+      "hotReloadProfile": "aspnetcore",
+      "dotnetRunMessages": true
+    },
+    "Residents": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "SITE_PATH": "/Residents",
+        "SITE_CONTROLLER": "Residents",
+        "VIEW_FOLDER": "Site"
       },
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": true
@@ -13,7 +55,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/residents/council-tax/council-tax-information",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -21,7 +63,7 @@
     "WSL": {
       "commandName": "WSL2",
       "launchBrowser": true,
-      "launchUrl": "https://localhost:5001/residents/council-tax/council-tax-information",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
@@ -32,7 +74,7 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "https://localhost:5001/residents/council-tax/council-tax-information",
+      "applicationUrl": "https://localhost:5001",
       "sslPort": 44322
     }
   }

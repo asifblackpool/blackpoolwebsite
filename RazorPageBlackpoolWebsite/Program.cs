@@ -23,17 +23,26 @@ using RazorPageBlackpoolWebsite.Infrastructure.Repositories;
 using RazorPageBlackpoolWebsite.Core.Services.ContentHandling.Handlers;
 using RazorPageBlackpoolWebsite.Core.Services.ContentHandling.Interfaces;
 using RazorPageBlackpoolWebsite.Constants.Interfaces;
+using RazorPageBlackpoolWebsite.Configuration;
 
-// Load environment variables FIRST
-DotNetEnv.Env.TraversePath().Load();
+// Load environment variables FIRST.
+// LoadOptions(false) = do NOT overwrite variables that are already set
+// (launch profile on local dev, Contensis block env on deployment).
+// This is what makes launch-profile section switching work locally,
+// and what lets the Contensis block's env win over .env on deployment.
+DotNetEnv.Env.Load(
+    path: Directory.GetCurrentDirectory(),
+    options: new LoadOptions(false)
+);
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Bind settings
+builder.Services.Configure<BlackpoolSettings>(
+    builder.Configuration.GetSection("BlackpoolSettings"));
 
-Console.WriteLine("Working directory: " + Directory.GetCurrentDirectory());
-string x = Directory.GetCurrentDirectory();
-string s = Environment.GetEnvironmentVariable("SITE_PATH");
-Console.WriteLine("SITE_PATH from env: " + Environment.GetEnvironmentVariable("SITE_PATH"));
+// Register resolver
+builder.Services.AddScoped<ApiUrlResolver>();
 
 // Configure Forwarded Headers to trust the proxy
 builder.Services.Configure<ForwardedHeadersOptions>(options =>
@@ -151,14 +160,6 @@ var app = builder.Build();
 
 var siteConfig = app.Services.GetRequiredService<ISiteConfig>();
 
-// TEMP DEBUG — remove after fixing
-Console.WriteLine($"DEBUG: SitePath = '{siteConfig.SitePath}'");
-Console.WriteLine($"DEBUG: SiteController = '{siteConfig.SiteController}'");
-Console.WriteLine($"DEBUG: ViewFolder = '{siteConfig.ViewFolder}'");
-Console.WriteLine($"DEBUG: ENV SITE_PATH = '{Environment.GetEnvironmentVariable("SITE_PATH")}'");
-Console.WriteLine($"DEBUG: ENV SITE_CONTROLLER = '{Environment.GetEnvironmentVariable("SITE_CONTROLLER")}'");
-Console.WriteLine($"DEBUG: ENV VIEW_FOLDER = '{Environment.GetEnvironmentVariable("VIEW_FOLDER")}'");
-
 app.UseContentModelling();
 app.UseForwardedHeaders();
 
@@ -202,6 +203,16 @@ app.UseMiddleware<ClassicAssetProxyMiddleware>();
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", siteConfig.SitePath, app.Environment.IsDevelopment() ? 302 : 301));
 
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    await next();
+    if (context.Response.StatusCode >= 500)
+    {
+        Console.WriteLine($"500 on {context.Request.Path} — no exception captured. " +
+                          $"Handler: {context.GetEndpoint()?.DisplayName}");
+    }
+});
 
 // Capture the original path so the error page can display it.
 app.UseErrorContext();
