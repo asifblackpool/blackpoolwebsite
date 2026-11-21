@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
 using Zengenti.Contensis.Delivery;
 using Microsoft.AspNetCore.Rewrite;
@@ -160,11 +161,13 @@ var app = builder.Build();
 
 var siteConfig = app.Services.GetRequiredService<ISiteConfig>();
 
-app.UseContentModelling();
-app.UseForwardedHeaders();
-
 // ─────────────────────────────────────────────────────────────────────
-// EXCEPTION HANDLING
+// EXCEPTION HANDLING — MUST BE FIRST
+//
+// FIX: Moved above UseContentModelling() so exceptions thrown during
+// content fetching are caught. Previously this was registered after
+// UseContentModelling(), meaning any content-fetch exception bypassed
+// the handler entirely and crashed the request.
 //
 // /Error must NOT depend on Contensis. If it does, an OOM in the content
 // fetch will re-execute /Error, which re-enters the content fetch, and
@@ -191,6 +194,57 @@ else
     });
 }
 
+app.UseContentModelling();
+app.UseForwardedHeaders();
+
+// ─────────────────────────────────────────────────────────────────────
+// DIAGNOSTIC MIDDLEWARE
+//
+// FIX: Wraps next() in try/catch so it actually captures the exception
+// instead of only seeing the rewritten 500 response. Also checks
+// IExceptionHandlerFeature in case UseExceptionHandler already caught
+// it upstream. Logs via ILogger so it appears in Contensis console logs.
+// ─────────────────────────────────────────────────────────────────────
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("DiagnosticMiddleware");
+
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex,
+            "UNHANDLED {ExceptionType} on {Path} — handler: {Handler}",
+            ex.GetType().Name,
+            context.Request.Path,
+            context.GetEndpoint()?.DisplayName);
+        throw;
+    }
+
+    if (context.Response.StatusCode >= 500)
+    {
+        var feature = context.Features.Get<IExceptionHandlerFeature>();
+        if (feature?.Error is not null)
+        {
+            logger.LogError(feature.Error,
+                "500 (caught by UseExceptionHandler) on {Path} — original exception: {ExceptionType}",
+                context.Request.Path,
+                feature.Error.GetType().Name);
+        }
+        else
+        {
+            logger.LogWarning(
+                "500 on {Path} — no exception feature present. Handler: {Handler}",
+                context.Request.Path,
+                context.GetEndpoint()?.DisplayName);
+        }
+    }
+});
+
 app.UseStaticFiles();
 
 // Proxy asset requests to the Classic backend so PDFs, CSVs, Office
@@ -203,16 +257,6 @@ app.UseMiddleware<ClassicAssetProxyMiddleware>();
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", siteConfig.SitePath, app.Environment.IsDevelopment() ? 302 : 301));
 
 app.UseRouting();
-
-app.Use(async (context, next) =>
-{
-    await next();
-    if (context.Response.StatusCode >= 500)
-    {
-        Console.WriteLine($"500 on {context.Request.Path} — no exception captured. " +
-                          $"Handler: {context.GetEndpoint()?.DisplayName}");
-    }
-});
 
 // Capture the original path so the error page can display it.
 app.UseErrorContext();
