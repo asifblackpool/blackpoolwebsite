@@ -197,54 +197,6 @@ else
 app.UseContentModelling();
 app.UseForwardedHeaders();
 
-// ─────────────────────────────────────────────────────────────────────
-// DIAGNOSTIC MIDDLEWARE
-//
-// FIX: Wraps next() in try/catch so it actually captures the exception
-// instead of only seeing the rewritten 500 response. Also checks
-// IExceptionHandlerFeature in case UseExceptionHandler already caught
-// it upstream. Logs via ILogger so it appears in Contensis console logs.
-// ─────────────────────────────────────────────────────────────────────
-app.Use(async (context, next) =>
-{
-    var logger = context.RequestServices
-        .GetRequiredService<ILoggerFactory>()
-        .CreateLogger("DiagnosticMiddleware");
-
-    try
-    {
-        await next();
-    }
-    catch (Exception ex)
-    {
-        logger.LogError(ex,
-            "UNHANDLED {ExceptionType} on {Path} — handler: {Handler}",
-            ex.GetType().Name,
-            context.Request.Path,
-            context.GetEndpoint()?.DisplayName);
-        throw;
-    }
-
-    if (context.Response.StatusCode >= 500)
-    {
-        var feature = context.Features.Get<IExceptionHandlerFeature>();
-        if (feature?.Error is not null)
-        {
-            logger.LogError(feature.Error,
-                "500 (caught by UseExceptionHandler) on {Path} — original exception: {ExceptionType}",
-                context.Request.Path,
-                feature.Error.GetType().Name);
-        }
-        else
-        {
-            logger.LogWarning(
-                "500 on {Path} — no exception feature present. Handler: {Handler}",
-                context.Request.Path,
-                context.GetEndpoint()?.DisplayName);
-        }
-    }
-});
-
 app.UseStaticFiles();
 
 // Proxy asset requests to the Classic backend so PDFs, CSVs, Office
@@ -257,6 +209,38 @@ app.UseMiddleware<ClassicAssetProxyMiddleware>();
 app.UseRewriter(new RewriteOptions().AddRedirect("^$", siteConfig.SitePath, app.Environment.IsDevelopment() ? 302 : 301));
 
 app.UseRouting();
+
+// ─────────────────────────────────────────────────────────────────────
+// DIAGNOSTIC MIDDLEWARE
+//
+// Runs AFTER UseRouting() so context.GetEndpoint() returns the matched
+// endpoint (controller/action) — that tells you which handler threw.
+// Wraps next() in try/catch so real exceptions are logged with full
+// stack trace before UseExceptionHandler swallows them.
+// This block is temporary — remove once the 500 root cause is found.
+// ─────────────────────────────────────────────────────────────────────
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("DiagnosticMiddleware");
+
+    var endpoint = context.GetEndpoint()?.DisplayName;
+
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex,
+            "UNHANDLED {ExceptionType} on {Path} — handler: {Handler}",
+            ex.GetType().Name,
+            context.Request.Path,
+            endpoint);
+        throw;
+    }
+});
 
 // Capture the original path so the error page can display it.
 app.UseErrorContext();
