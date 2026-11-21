@@ -1,10 +1,8 @@
 ﻿using DotNetEnv;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
 using Zengenti.Contensis.Delivery;
 using Microsoft.AspNetCore.Rewrite;
 using Content.Modelling.Extensions;
-using RazorPageBlackpoolWebsite.Constants;
 using RazorPageBlackpoolWebsite.Core.Interfaces;
 using RazorPageBlackpoolWebsite.Core.Services.ContentHandling;
 using RazorPageBlackpoolWebsite.Core.Services.ContentProcessing.Interfaces;
@@ -163,16 +161,6 @@ var siteConfig = app.Services.GetRequiredService<ISiteConfig>();
 
 // ─────────────────────────────────────────────────────────────────────
 // EXCEPTION HANDLING — MUST BE FIRST
-//
-// FIX: Moved above UseContentModelling() so exceptions thrown during
-// content fetching are caught. Previously this was registered after
-// UseContentModelling(), meaning any content-fetch exception bypassed
-// the handler entirely and crashed the request.
-//
-// /Error must NOT depend on Contensis. If it does, an OOM in the content
-// fetch will re-execute /Error, which re-enters the content fetch, and
-// the process dies. AllowStatusCode404Response prevents the secondary
-// InvalidOperationException when /Error itself returns a 404.
 // ─────────────────────────────────────────────────────────────────────
 if (!app.Environment.IsDevelopment())
 {
@@ -194,6 +182,36 @@ else
     });
 }
 
+// ─────────────────────────────────────────────────────────────────────
+// EARLY DIAGNOSTIC MIDDLEWARE
+//
+// Runs BEFORE UseContentModelling, UseStaticFiles, ClassicAssetProxy,
+// UseRewriter — i.e. everything that throws before routing. If an
+// exception happens in any of those, this catches it and logs the
+// full stack trace before UseExceptionHandler swallows it.
+//
+// TEMPORARY — remove once the 500 root cause is found.
+// ─────────────────────────────────────────────────────────────────────
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("EarlyDiagnostic");
+
+    try
+    {
+        await next();
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex,
+            "EARLY UNHANDLED {ExceptionType} on {Path}",
+            ex.GetType().Name,
+            context.Request.Path);
+        throw;
+    }
+});
+
 app.UseContentModelling();
 app.UseForwardedHeaders();
 
@@ -211,13 +229,13 @@ app.UseRewriter(new RewriteOptions().AddRedirect("^$", siteConfig.SitePath, app.
 app.UseRouting();
 
 // ─────────────────────────────────────────────────────────────────────
-// DIAGNOSTIC MIDDLEWARE
+// AFTER-ROUTING DIAGNOSTIC MIDDLEWARE
 //
-// Runs AFTER UseRouting() so context.GetEndpoint() returns the matched
-// endpoint (controller/action) — that tells you which handler threw.
-// Wraps next() in try/catch so real exceptions are logged with full
-// stack trace before UseExceptionHandler swallows them.
-// This block is temporary — remove once the 500 root cause is found.
+// Runs after UseRouting() so context.GetEndpoint() returns the matched
+// controller/action. Catches exceptions from controllers, Razor pages,
+// and BreadcrumbMiddleware with the handler name in the log.
+//
+// TEMPORARY — remove once the 500 root cause is found.
 // ─────────────────────────────────────────────────────────────────────
 app.Use(async (context, next) =>
 {
@@ -248,13 +266,7 @@ app.UseErrorContext();
 
 // ─────────────────────────────────────────────────────────────────────
 // ENDPOINT REGISTRATION — ORDER MATTERS
-//
-// Attribute-routed controllers (like PdfController with [Route("pdf")])
-// are registered FIRST by MapControllers, and take precedence over the
-// conventional routes below. But we still add an explicit exclusion on
-// the section route so /pdf/... can never be captured by it.
 // ─────────────────────────────────────────────────────────────────────
-
 app.MapControllers();
 
 // 1. EXACT match for /xxxxx (or /xxxxx) – must come first
