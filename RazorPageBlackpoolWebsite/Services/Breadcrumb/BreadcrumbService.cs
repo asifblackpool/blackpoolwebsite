@@ -1,6 +1,7 @@
 ﻿using RazorPageBlackpoolWebsite.Constants.Interfaces;
 using RazorPageBlackpoolWebsite.Core.Models;
 using System.Globalization;
+using Zengenti;
 
 namespace RazorPageBlackpoolWebsite.Services.Breadcrumb
 {
@@ -127,7 +128,8 @@ namespace RazorPageBlackpoolWebsite.Services.Breadcrumb
                 finalItems[^1].Url = null;
             }
 
-            return finalItems;
+            //sanity just check we dont add the site config view folder to the breadcrumbs as this is not a page
+            return finalItems.Where(i => i.Title != _siteConfig.ViewFolder).ToList();
         }
     }
 }
