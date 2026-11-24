@@ -123,5 +123,6 @@ namespace RazorPageBlackpoolWebsite.Services.Breadcrumb
                 .Where(i => !string.Equals(i.Title, _siteConfig.ViewFolder, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
+
     }
 }
