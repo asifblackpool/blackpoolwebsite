@@ -47,3 +47,4 @@ RazorPageBlackpoolWebsite/wwwroot/static/SiteElements/ChannelShift/razorviews/
 
 # Language server cache files
 *.lscache
+/RazorPageBlackpoolWebsite/publish-test
