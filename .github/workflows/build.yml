@@ -74,13 +74,9 @@ jobs:
             -t ${{ env.IMAGE_NAME }}:latest \
             .
 
-      - name: Debug - Verify .env file in Docker image
-        run: |
-          echo "=== VERIFYING .env FILE IN DOCKER IMAGE ==="
-          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "ls -la .env && echo '✅ .env file found!' || echo '❌ .env file NOT found!'"
-          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "cat .env | sed 's/ACCESS_TOKEN=.*/ACCESS_TOKEN=***MASKED***/g' || echo '❌ Failed to read .env file!'"
-          docker run --rm --entrypoint sh ${{ env.IMAGE_NAME }}:build-${{ github.run_number }} -c "printenv ACCESS_TOKEN | head -c 10 && echo '... (truncated)' || echo '❌ ACCESS_TOKEN not found!'"
-        continue-on-error: true
+      # NOTE: The .env verification step is removed — the Dockerfile no longer
+      # writes a .env file (secrets come from Contensis block env vars at runtime).
+      # If you re-add a .env step to the Dockerfile, restore this verification.
 
       - name: Push Docker image
         run: |
@@ -138,7 +134,15 @@ jobs:
     name: Push block to Contensis
     runs-on: ubuntu-latest
     needs: [build-latest, resolve-targets]
-    if: needs.resolve-targets.outputs.targets != '[]'
+    # Only deploy when the build succeeded AND targets were resolved.
+    # always() prevents the implicit "skip if any dependency skipped" behaviour,
+    # so the explicit checks below are what actually gate the job.
+    if: |
+      always() &&
+      needs.build-latest.result == 'success' &&
+      needs.resolve-targets.result == 'success' &&
+      needs.resolve-targets.outputs.targets != '[]' &&
+      needs.resolve-targets.outputs.targets != ''
     permissions:
       contents: read
       packages: write

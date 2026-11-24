@@ -47,60 +47,50 @@ namespace RazorPageBlackpoolWebsite.Services.Breadcrumb
         public List<BreadcrumbItem> GetBreadcrumbs(HttpContext context)
         {
             var finalItems = new List<BreadcrumbItem>
-            {
-                // 1. Home
-                new BreadcrumbItem { Title = "Home", Url = "/" }
-            };
+    {
+        // 1. Home
+        new BreadcrumbItem { Title = "Home", Url = "/" }
+    };
 
-            // 2. Section root (e.g. "your-council")
-            string? nodePath = _siteConfig.ViewFolder?
+            // ViewFolder is the Contensis Site View folder ("Site") — used only
+            // to skip that segment from the request path. It is NOT a page and
+            // must NOT appear in breadcrumb URLs.
+            string? viewFolder = _siteConfig.ViewFolder?
                 .TrimStart('/')
                 .TrimEnd('/');
 
-            if (!string.IsNullOrEmpty(nodePath))
-            {
-                string councilTitle = CultureInfo.CurrentCulture.TextInfo
-                    .ToTitleCase(nodePath.Replace("-", " ").ToLowerInvariant());
+            var path = context.Request.Path.Value ?? "";
+            var segments = path
+                .Split('/', StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
 
-                finalItems.Add(new BreadcrumbItem
-                {
-                    Title = councilTitle,
-                    Url = "/" + nodePath.ToLowerInvariant()
-                });
+            // Skip the view-folder segment if present at the start of the path.
+            if (segments.Count > 0 &&
+                !string.IsNullOrEmpty(viewFolder) &&
+                segments[0].Equals(viewFolder, StringComparison.OrdinalIgnoreCase))
+            {
+                segments.RemoveAt(0);
             }
+
+            // The first remaining segment is the real site root (e.g. "your-council").
+            // That is what breadcrumb URLs should be rooted at.
+            string? siteRoot = segments.Count > 0 ? segments[0] : null;
 
             if (_autoGenerate)
             {
-                var path = context.Request.Path.Value ?? "";
-                var segments = path
-                    .Split('/', StringSplitOptions.RemoveEmptyEntries)
-                    .ToList();
-
-                // Skip the section root segment if present — already added above.
-                if (segments.Count > 0 &&
-                    segments[0].Equals(nodePath, StringComparison.OrdinalIgnoreCase))
-                {
-                    segments.RemoveAt(0);
-                }
-
                 string accumulatedPath = "";
 
                 foreach (var segment in segments)
                 {
                     accumulatedPath += $"/{segment}";
 
-                    // Preserve natural casing for display.
-                    // "BLACKPOOL-CO-PRODUCTION" → "Blackpool Co Production".
                     var title = CultureInfo.CurrentCulture.TextInfo
                         .ToTitleCase(segment.Replace("-", " ").ToLowerInvariant());
 
                     finalItems.Add(new BreadcrumbItem
                     {
                         Title = title,
-                        // Normalize URL to lowercase so it matches Contensis
-                        // path lookups (which are case-insensitive but serve
-                        // lowercase canonical URLs).
-                        Url = $"/{nodePath}{accumulatedPath}".ToLowerInvariant()
+                        Url = accumulatedPath.ToLowerInvariant()
                     });
                 }
             }
@@ -128,8 +118,10 @@ namespace RazorPageBlackpoolWebsite.Services.Breadcrumb
                 finalItems[^1].Url = null;
             }
 
-            //sanity just check we dont add the site config view folder to the breadcrumbs as this is not a page
-            return finalItems.Where(i => i.Title != _siteConfig.ViewFolder).ToList();
+            // Sanity: drop the Site View folder crumb if it somehow slipped in.
+            return finalItems
+                .Where(i => !string.Equals(i.Title, _siteConfig.ViewFolder, StringComparison.OrdinalIgnoreCase))
+                .ToList();
         }
     }
 }

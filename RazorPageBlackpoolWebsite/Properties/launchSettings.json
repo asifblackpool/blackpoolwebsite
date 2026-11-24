@@ -6,7 +6,7 @@
       "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "SITE_PATH": "/Your-Council",
+        "SITE_PATH": "Your-Council",
         "SITE_CONTROLLER": "YourCouncil",
         "VIEW_FOLDER": "Site"
       },

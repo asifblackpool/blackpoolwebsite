@@ -1,4 +1,5 @@
 ﻿using DotNetEnv;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.HttpOverrides;
 using Zengenti.Contensis.Delivery;
 using Microsoft.AspNetCore.Rewrite;
@@ -145,17 +146,28 @@ builder.Services.AddScoped<ICmsViewModelFactory, CmsViewModelFactory>();
 //
 // The ZengentiClientAdapter and CanvasHydrator use byte-based sizes
 // (SetSize(serialisedPayloadLength)). That means the SizeLimit here is
-// in BYTES, not entries. 64 MB is comfortable for a container with
-// 512 MB – 1 GB of RAM and holds a few hundred hydrated pages.
+// in BYTES, not entries.
 //
-// If you see frequent cache misses / re-fetches under load, raise this.
-// If RSS climbs towards the container limit, lower it.
+// REDUCED from 64 MB to 16 MB — the container is 512 MB and the image
+// was already at 88.6% (454 MB) before any request, leaving only ~58 MB
+// of headroom. 64 MB of cache on top of that caused OOM on first request.
+// 16 MB is enough for a few dozen hydrated pages; raise only if you see
+// frequent cache misses AND the image is well under the memory limit.
 builder.Services.AddMemoryCache(options =>
 {
-    options.SizeLimit = 64 * 1024 * 1024;   // 64 MB total
+    options.SizeLimit = 16 * 1024 * 1024;   // 16 MB total
 });
 
 var app = builder.Build();
+
+app.Use(async (context, next) =>
+{
+    var logger = context.RequestServices
+        .GetRequiredService<ILoggerFactory>()
+        .CreateLogger("RequestTrace");
+    logger.LogInformation("INCOMING {Method} {Path}", context.Request.Method, context.Request.Path);
+    await next();
+});
 
 var siteConfig = app.Services.GetRequiredService<ISiteConfig>();
 
